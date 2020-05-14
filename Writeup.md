@@ -60,7 +60,7 @@ The thrust and the moment values calculated by the different P, PD and PID contr
 
 ### Flight Evaluation
 
-After implementing the above methods, it was time to execute the flight. The A* algorithm surprisingly consumed more time than in the jupyter notebook excercises to find the path although the code was the same. 
+After implementing the above methods, it was time to execute the flight. I was able to complete all the 5 scenarios except controlling the roll of the quad in the 2nd scenrio. This is the result of thee 5th scenario.
 
 <p align="center">
    
