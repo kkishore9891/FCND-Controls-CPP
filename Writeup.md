@@ -2,7 +2,7 @@
 
 <p align="center">
    
-  <img width="805" height="593" src="https://user-images.githubusercontent.com/34810513/81973969-85803000-9642-11ea-8052-366fd05f53c1.gif">
+  <img width="600" height="450" src="https://user-images.githubusercontent.com/34810513/81973969-85803000-9642-11ea-8052-366fd05f53c1.gif">
   
 </p>
 This Writeup.md considers the rubric points individually and describes how I addressed each rubric point in my implementation.  
@@ -28,7 +28,7 @@ The roll pitch controller is implemented in the function RollPitchControl(). Thi
 After implementing these controllers, the output of the second scenario is as follows. (The Roll could not be made to stay below +/- 0.025 without affecting the results of other scenarios).
 <p align="center">
    
-  <img width="817" height="122" src="https://user-images.githubusercontent.com/34810513/81974048-a183d180-9642-11ea-9b88-7b85aaf5b78b.gif">
+  <img width="450" height="352" src="https://user-images.githubusercontent.com/34810513/81974048-a183d180-9642-11ea-9b88-7b85aaf5b78b.gif">
   
 </p>
 
@@ -45,7 +45,7 @@ After implementing the altitude, lateral position and the yaw controller, this w
 
 <p align="center">
    
-<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/81974768-a5642380-9643-11ea-8267-160a21080efa.gif">
+<img width="450" height="352" src="https://user-images.githubusercontent.com/34810513/81974768-a5642380-9643-11ea-8267-160a21080efa.gif">
   
 </p>
 
@@ -54,7 +54,7 @@ The thrust and the moment values calculated by the different P, PD and PID contr
 
 <p align="center">
    
-<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/81975038-14da1300-9644-11ea-86d8-599d1c5f3139.gif">
+<img width="450" height="352" src="https://user-images.githubusercontent.com/34810513/81975038-14da1300-9644-11ea-86d8-599d1c5f3139.gif">
   
 </p>
 
