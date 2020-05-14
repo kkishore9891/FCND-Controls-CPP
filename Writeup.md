@@ -2,7 +2,7 @@
 
 <p align="center">
    
-  <img width="805" height="593" src="https://user-images.githubusercontent.com/34810513/80971134-ed13cf80-8e39-11ea-8321-c2e53e64d603.jpg">
+  <img width="805" height="593" src="https://user-images.githubusercontent.com/34810513/81973969-85803000-9642-11ea-8052-366fd05f53c1.gif">
   
 </p>
 This Writeup.md considers the rubric points individually and describes how I addressed each rubric point in my implementation.  
@@ -25,10 +25,10 @@ The body rate controller is implemented in the function BodyRateControl. It is a
 
 The roll pitch controller is implemented in the function RollPitchControl(). This is also a p controller where the value to be corrected is the elements R13 and R23 in the rotation matrix R. This is used to accurately control the roll angle and the pitch angle of the controller. The output of this controller is the target value(set point) for the bodyrate controller. Thus the coreection value is translated from the world frame to the body frame through a transformation. The gain value, kpBank for this controller is 12.
 
-After implementing these controllers, the output of the second scenario is as follows.
+After implementing these controllers, the output of the second scenario is as follows. (The Roll could not be made to stay below +/- 0.025 without affecting the results of other scenarios).
 <p align="center">
    
-  <img width="817" height="122" src="https://user-images.githubusercontent.com/34810513/80983688-77642f80-8e4a-11ea-911b-005b35aa4fe1.jpg">
+  <img width="817" height="122" src="https://user-images.githubusercontent.com/34810513/81974048-a183d180-9642-11ea-9b88-7b85aaf5b78b.gif">
   
 </p>
 
@@ -45,7 +45,7 @@ After implementing the altitude, lateral position and the yaw controller, this w
 
 <p align="center">
    
-<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80990336-cd89a080-8e53-11ea-9fad-31af615f67b4.jpg">
+<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/81974768-a5642380-9643-11ea-8267-160a21080efa.gif">
   
 </p>
 
@@ -54,7 +54,7 @@ The thrust and the moment values calculated by the different P, PD and PID contr
 
 <p align="center">
    
-<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80990336-cd89a080-8e53-11ea-9fad-31af615f67b4.jpg">
+<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/81975038-14da1300-9644-11ea-86d8-599d1c5f3139.gif">
   
 </p>
 
@@ -64,7 +64,7 @@ After implementing the above methods, it was time to execute the flight. The A* 
 
 <p align="center">
    
-  <img width="800" height="600" src="https://user-images.githubusercontent.com/34810513/80990456-fad64e80-8e53-11ea-844a-4d85631180db.gif">
+  <img width="800" height="600" src="https://user-images.githubusercontent.com/34810513/81974890-d5132b80-9643-11ea-9cea-478a55e0521b.gif">
   
 </p>
   
