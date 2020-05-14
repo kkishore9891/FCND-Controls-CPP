@@ -67,9 +67,3 @@ After implementing the above methods, it was time to execute the flight. I was a
   <img width="800" height="600" src="https://user-images.githubusercontent.com/34810513/81974890-d5132b80-9643-11ea-9cea-478a55e0521b.gif">
   
 </p>
-  
-# Extra Challenges:
-
-Sadly I haven't implemented any of the planning techniques such as probabilistic roadmap or receding horizon method. The drone's movement doesn't account for the dubin's car problem although I plan to try these things later in the future.
-
-
