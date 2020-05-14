@@ -1,4 +1,4 @@
-## Write Up: 3D Motion Planning
+## Write Up: Building a Controller
 
 <p align="center">
    
@@ -15,79 +15,50 @@ You can find the youtube video of the demo here:
 
 The current Writeup.md (markdown) file serves the purpose of addressing how I have dealt with the various tasks.
 
-### Explaining the Starter Code
+### Implemented Controller
 
-#### 1. Explaining the functionality of what's provided in `motion_planning.py` and `planning_utils.py`
+#### 1. Implemented body rate control in C++.
 
-This is my undertanding of the starter code:
+The body rate controller is implemented in the function BodyRateControl. It is a P controller in which a V3F variable called momentCmd is created to contain the moment values provided to the controller. This is calculated by finding the difference between target and the actual body rate values in each axis and multiplying them with the moments of Inertia in each axis to find the target torque. This calculated value is the error value. It is multiplied with the gain of the body rate controller kpPQR to find the target output. After some trial and error, I set the kpPQR values as 85,85 and 5 for P Q and R respectively.
 
-1) The Drone initially spawns at the center of the map.
-2) This is the global home by deafult. 
-3) The center of the map (-north_offset, -east_offset)
-is set as the starting point.
-4) The goal is 10 meters to the north and 10 meters to the east of the starting point.
-5) A path is calculated using A* algorithm and the waypoint is calculated.
-6) The drone follows the waypoints and moves in a zigzag manner to the goal.
+#### 2. Implement roll pitch control in C++.
 
-<p align="center">
-   
-  <img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80979044-79c38b00-8e44-11ea-8756-0fd7ed3b9f58.jpg">
-  
-</p>
+The roll pitch controller is implemented in the function RollPitchControl(). This is also a p controller where the value to be corrected is the elements R13 and R23 in the rotation matrix R. This is used to accurately control the roll angle and the pitch angle of the controller. The output of this controller is the target value(set point) for the bodyrate controller. Thus the coreection value is translated from the world frame to the body frame through a transformation. The gain value, kpBank for this controller is 12.
 
-### Implementing Your Path Planning Algorithm
-
-#### 1. Setting up the global home position
-
-The task is to read the first line of the csv file, extract lat0 and lon0 as floating point values and use the self.set_home_position() method to set global home.
-
-I have implemented the solution in the lines from 123 to 127 in motion planning.py I used file reading functionality of python to extract the string and seperate the words based on commas and spaces. Once the string versions of the latitude and longitude were obtained, I converted them to floating point values. I used the set_home_position function to set the latitude and longitude obtained as the home position.
-<p align="center">
-   
-  <img width="485" height="138" src="https://user-images.githubusercontent.com/34810513/80983326-12a8d500-8e4a-11ea-9035-5212f071c665.jpg">
-  
-</p>
-
-#### 2. Setting the current local position
-Here I have determined the local position relative to global home using the global_to_local function of the udacidrone API.
-
+After implementing these controllers, the output of the second scenario is as follows.
 <p align="center">
    
   <img width="817" height="122" src="https://user-images.githubusercontent.com/34810513/80983688-77642f80-8e4a-11ea-911b-005b35aa4fe1.jpg">
   
 </p>
 
-#### 3. Set grid start position from local position
-The local position obtained is with reference to the center of the global home position. We have to subtract this local value with the north and east offset values to obtain our position in the grid. This can be found in line 142.
+#### 3. Implement altitude controller in C++.
+The altitude controller is implemented in the function AltitudeControl(). This is a complete PID controller. The velocity and the position errors are calculated to determine the P and D terms. The position error is integrated to find the I term. The target acceleration is added along with these terms to find the correction term called z_term. This value is then used to calculate the thrust to be applied while accounting for the action of gravity. The difference between the z_term and gravity is divided by R33 to account for the orientation of the vehicle. This is later constrained to stay within the maximum thrust of the drone. The gain values for the controller are 25(kpPosz), 6.5(kpVelz) and 20(KiPosZ).
+
+#### 4. Implement lateral position control in C++.
+This controller is a PD controller. It is implemented in the function LateralPositionControl(). This is used to control the drone's X and Y coordinates. The position and velocity errors are calculated. The velocity error is constrained to stay below the maximum XY velocity. The acceleration command is calculated by multiplying the error with the gain terms and it is constrained. The kpPosXY and the kpVelXY gain terms are 30 and 11 respectively.
+
+#### 5. Implement yaw control in C++.
+The yaw control calculates the target moment along the Z axis. It is implemented in YawControl() function. The yaw error value is constrained between -2pi and +2pi and it is multiplied with the gain value kpYaw. The kpYaw value is 2.
+   
+After implementing the altitude, lateral position and the yaw controller, this was the result in scenario 3.
 
 <p align="center">
    
-  <img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80989834-1b51d900-8e53-11ea-998c-7bcb69c098a5.jpg">
+<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80990336-cd89a080-8e53-11ea-9fad-31af615f67b4.jpg">
   
 </p>
 
-#### 4. Set grid goal position from geodetic coords
-In order to set the global position, I have first specified it in terms of its geodetic coordinates and converted them to their local coordinates and applied the offset on them just like I did with the start coordinates. The lines 147-152 serve this purpose.
+#### 6. Implement calculating the motor commands given commanded thrust and moments in C++.
+The thrust and the moment values calculated by the different P, PD and PID controllers are converted to the motor thrust values in the GenerateMotorCommands() function. The collective thrust and the commanded moment values are used to calculate the c bar, p bar q bar and the r bar values. These 4 values are then used to determine individual thrust values by solving the linear equation using the matrix method.
 
 <p align="center">
    
-  <img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80989996-52c08580-8e53-11ea-9025-6b3262277c8e.jpg">
+<img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80990336-cd89a080-8e53-11ea-9fad-31af615f67b4.jpg">
   
 </p>
 
-#### 5. Modify A* to include diagonal motion (or replace A* altogether)
-I modified the A* algorithm to incorporate diagonal movments too. I did this by adding additional member values to the "Action" class in planning_utils.py. In addition to this I made some changes in the "valid_actions" function to make the drone move in the diagonal directions. These can be found in lines 58-61 and lines 91-98 in planning_utils.py.
-<p align="center">
-   
-  <img width="400" height="300" src="https://user-images.githubusercontent.com/34810513/80990336-cd89a080-8e53-11ea-9fad-31af615f67b4.jpg">
-  
-</p>
-
-#### 6. Cull waypoints 
-Finally I used the concept collinearity to cull the path and extract the waypoints. I have created three new functions called as point(), collinearity_check() and prune_path() to do the same. point() converts the input values in the form of a tuple to a numpy array for easy calculation. collinearity_check() calculates the determinant of the points and if the area obtained so is lesser than a threshold epsilon, it return the boolean value True. Else it return False. prune_path removes the 2nd value from a group of 3 points if the points are collinear. If not, it considers the 2nd,3rd and the 4th point and leaves the first point behind. This uses a concept of sliding window.
-
-
-### Execute the flight
+### Flight Evaluation
 
 After implementing the above methods, it was time to execute the flight. The A* algorithm surprisingly consumed more time than in the jupyter notebook excercises to find the path although the code was the same. 
 
